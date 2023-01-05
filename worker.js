@@ -3,7 +3,7 @@ import { diff, addedDiff, deletedDiff, updatedDiff, detailedDiff } from 'deep-ob
 export const api = {
   icon: '🚀',
   name: 'diff.do',
-  description: 'Cloudflare Worker Template',
+  description: 'Generate deep-diffs between two objects. Using URL placeholders you can compare any two objects. For example, data.com/{id1,id2} will compare the two objects with the given IDs.',
   url: 'https://diff.do/api',
   type: 'https://apis.do/templates',
   endpoints: {
