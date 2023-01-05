@@ -2,19 +2,18 @@ import { diff, addedDiff, deletedDiff, updatedDiff, detailedDiff } from 'deep-ob
 
 export const api = {
   icon: '🚀',
-  name: 'templates.do',
+  name: 'diff.do',
   description: 'Cloudflare Worker Template',
-  url: 'https://templates.do/api',
+  url: 'https://diff.do/api',
   type: 'https://apis.do/templates',
   endpoints: {
-    listCategories: 'https://templates.do/api',
-    getCategory: 'https://templates.do/:type',
+    diff: `https://diff.do/:url`
   },
-  site: 'https://templates.do',
-  login: 'https://templates.do/login',
-  signup: 'https://templates.do/signup',
-  subscribe: 'https://templates.do/subscribe',
-  repo: 'https://github.com/drivly/templates.do',
+  site: 'https://diff.do',
+  login: 'https://diff.do/login',
+  signup: 'https://diff.do/signup',
+  subscribe: 'https://diff.do/subscribe',
+  repo: 'https://github.com/drivly/diff.do',
 }
 
 export const gettingStarted = [
@@ -23,6 +22,7 @@ export const gettingStarted = [
 ]
 
 export const examples = {
+  diff: `https://diff.do/listings.do/api/Listing/{b4990a25-bb49-4ab3-8a09-6d9488370c71,27ee2a85-3e1f-4c11-932c-e0cd5d516331}`
 }
 
 export default {
