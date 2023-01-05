@@ -1,0 +1,26 @@
+{
+  "name": "diff.do",
+  "version": "1.0.0",
+  "description": "Explore the API at: <https://templates.do/api>",
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "scripts": {
+    "build": "esbuild ./worker.js --bundle --format=esm --outfile=dist/index.mjs  --loader:.html=text --define:process.env.HMAC_SECRET=\"'$( echo $HMAC_SECRET )'\"",
+    "dev": "npx miniflare@latest --watch",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drivly/diff.do.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drivly/diff.do/issues"
+  },
+  "homepage": "https://github.com/drivly/diff.do#readme",
+  "dependencies": {
+    "deep-object-diff": "^1.1.9",
+    "esbuild": "^0.16.14"
+  }
+}

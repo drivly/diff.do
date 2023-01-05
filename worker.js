@@ -1,3 +1,5 @@
+import { diff, addedDiff, deletedDiff, updatedDiff, detailedDiff } from 'deep-object-diff';
+
 export const api = {
   icon: '🚀',
   name: 'templates.do',
@@ -21,7 +23,6 @@ export const gettingStarted = [
 ]
 
 export const examples = {
-  listItems: 'https://templates.do/worker',
 }
 
 export default {
@@ -29,11 +30,84 @@ export default {
     const { user, hostname, pathname, rootPath, pathSegments, query } = await env.CTX.fetch(req).then(res => res.json())
     if (rootPath) return json({ api, gettingStarted, examples, user })
     
-    // TODO: Implement this
-    const [ resource, id ] = pathSegments
-    const data = { resource, id, hello: user.city }
+    let [ options, ...url ] = pathSegments
+    let mode = 'detailed'
+
+    const allowedOptions = [
+      'added',
+      'deleted',
+      'updated',
+      'detailed',
+    ]
+
+    if (!allowedOptions.includes(options)) {
+      url = [ options, ...url ].join('/')
+    } else {
+      url = url.join('/')
+    }
+
+    // URL example: https://diff.do/detailed/bucket.do/read/{file1,file2}
+
+    const placeholder = /{([^}]+)}/g
+    const targetPlaceholder = url.match(placeholder)[0]
+    const matches = targetPlaceholder.replace(/{|}/g, '').split(',')
+
+    if (matches.length !== 2) {
+      return json({
+        api,
+        data: {
+          success: false,
+          error: 'You must provide two files to compare.',
+        },
+        user
+      })
+    }
+
+    const [ original, target] = await Promise.all(matches.map(async file => {
+      const res = await fetch(`https://${url.replace(targetPlaceholder, file)}`)
+      return res.json()
+    }))
+
+    const diffed = {
+      added: addedDiff,
+      deleted: deletedDiff,
+      updated: updatedDiff,
+      detailed: detailedDiff,
+    }[mode](original, target)
+
+    const data = {
+      diff: diffed,
+    }
+
+    function findMatchingFields(obj1, obj2, parentPath = '') {
+      const matchingFields = [];
     
-    return json({ api, data, user })
+      for (const key in obj1) {
+        if (obj2.hasOwnProperty(key)) {
+          if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+            // The values are objects, so we need to check their fields recursively
+            const nestedMatchingFields = findMatchingFields(obj1[key], obj2[key], `${parentPath}${key}.`);
+            matchingFields.push(...nestedMatchingFields);
+          } else if (obj1[key] === obj2[key]) {
+            // The values are not objects, so we can just compare them directly
+            matchingFields.push({
+              path: `${parentPath}${key}`,
+              value: obj1[key]
+            });
+          }
+        }
+      }
+    
+      return matchingFields;
+    }
+
+    data.matchingFields = findMatchingFields(original, target)
+    
+    return json({
+      api,
+      data,
+      user
+    })
   }
 }
 
