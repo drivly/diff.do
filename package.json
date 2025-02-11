@@ -21,6 +21,6 @@
   "homepage": "https://github.com/drivly/diff.do#readme",
   "dependencies": {
     "deep-object-diff": "^1.1.9",
-    "esbuild": "^0.16.14"
+    "esbuild": "^0.25.0"
   }
 }
